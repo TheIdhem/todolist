@@ -1,32 +1,39 @@
 import { Injectable } from "@angular/core";
-
+import { HttpClient } from "@angular/common/http";
+import { map } from "rxjs/operators";
 @Injectable({
   providedIn: "root"
 })
 export class NetworkService {
   toDoList: { [key: string]: any };
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getToDoList() {
-    this.toDoList = {
-      "1": { key: "1", title: "go to gym", isMarked: false },
-      "2": { key: "2", title: "go to work", isMarked: false }
-    };
-    return this.toDoList;
+    return this.http.get<any[]>("http://localhost:8080/todos").pipe(
+      map(data => {
+        var object = {};
+        for (let i = 0; i < data.length; i++) {
+          object[data[i].id] = data[i];
+        }
+        this.toDoList = object;
+        return object;
+      })
+    );
   }
 
   addItem(title) {
     let db = Object.values(this.toDoList);
     this.toDoList[db.length] = {
-      key: db.length,
+      id: db.length,
       title: title,
-      isMarked: false
+      checked: false
     };
   }
 
   toggleMark(key, flag) {
-    this.toDoList[key].isMarked = !flag;
+    console.log(key, flag);
+    this.toDoList[key].checked = !flag;
   }
 
   removeItem(key) {

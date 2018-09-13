@@ -13,9 +13,11 @@ export class ListItemComponent implements OnInit {
   constructor(private networkServices: NetworkService) {}
 
   ngOnInit() {
-    this.toDoList = Object.values(this.networkServices.getToDoList());
-    this.toDoList.sort((a, b) => {
-      return a.isMarked - b.isMarked;
+    this.networkServices.getToDoList().subscribe(data => {
+      this.toDoList = Object.values(data);
+      this.toDoList.sort((a, b) => {
+        return a.checked - b.checked;
+      });
     });
   }
 
@@ -24,8 +26,8 @@ export class ListItemComponent implements OnInit {
     title.value = null;
   }
 
-  toggleMark(key: string, isMarked) {
-    this.networkServices.toggleMark(key, isMarked);
+  toggleMark(key: string, checked) {
+    this.networkServices.toggleMark(key, checked);
   }
 
   removeItem(key) {

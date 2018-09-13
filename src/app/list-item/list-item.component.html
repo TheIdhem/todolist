@@ -12,11 +12,11 @@
 <div style="margin:5px 0px">
   <ul class="list-group">
     <li class="list-group-item" *ngFor="let item of toDoList">
-      <span class="hover-cursor" [class.text-success]="item.isMarked" (click)="toggleMark(item.key,item.isMarked)">
-        <i class="fa fa-lg" [ngClass]="item.isMarked?'fa-check-circle-o':'fa-circle-thin'"></i>
+      <span class="hover-cursor" [class.text-success]="item.checked" (click)="toggleMark(item.id,item.checked)">
+        <i class="fa fa-lg" [ngClass]="item.checked?'fa-check-circle-o':'fa-circle-thin'"></i>
       </span>
-      {{item.title}}
-      <span class="hover-cursor text-danger pull-right" (click)="removeItem(item.key)">
+      {{item.description}}
+      <span class="hover-cursor text-danger pull-right" (click)="removeItem(item.id)">
         <i class="fa fa-trash-o fa-lg"></i>
       </span>
     </li>
