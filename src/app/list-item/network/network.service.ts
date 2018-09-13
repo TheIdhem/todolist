@@ -12,12 +12,7 @@ export class NetworkService {
   getToDoList() {
     return this.http.get<any[]>("http://localhost:8080/todos").pipe(
       map(data => {
-        var object = {};
-        for (let i = 0; i < data.length; i++) {
-          object[data[i].id] = data[i];
-        }
-        this.toDoList = object;
-        return object;
+        return data;
       })
     );
   }
@@ -38,6 +33,7 @@ export class NetworkService {
 
   removeItem(key) {
     delete this.toDoList[key];
+
     console.log(this.toDoList);
   }
 }

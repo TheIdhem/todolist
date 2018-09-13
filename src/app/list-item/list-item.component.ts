@@ -14,7 +14,7 @@ export class ListItemComponent implements OnInit {
 
   ngOnInit() {
     this.networkServices.getToDoList().subscribe(data => {
-      this.toDoList = Object.values(data);
+      this.toDoList = data;
       this.toDoList.sort((a, b) => {
         return a.checked - b.checked;
       });
@@ -22,15 +22,25 @@ export class ListItemComponent implements OnInit {
   }
 
   addItem(title) {
-    this.networkServices.addItem(title.value);
+    // this.networkServices.addItem(title.value);
+    this.toDoList.push({
+      id: "khar",
+      description: title.value,
+      checked: false
+    });
     title.value = null;
   }
 
   toggleMark(key: string, checked) {
-    this.networkServices.toggleMark(key, checked);
+    // this.networkServices.toggleMark(key, checked);
   }
 
   removeItem(key) {
-    this.networkServices.removeItem(key);
+    for (let i = 0; i < this.toDoList.length; i++) {
+      if (this.toDoList[i].id === key) {
+        this.toDoList.splice(i, 1);
+      }
+    }
   }
+  // this.networkServices.removeItem(key);
 }
