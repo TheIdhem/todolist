@@ -68,7 +68,7 @@ export class ListItemComponent implements OnInit {
     this.networkServices.removeItem(key).subscribe(
       val => {},
       response => {
-        console.log("DELETE call in error", response);
+        // console.log("DELETE call in error", response);
       },
       () => {}
     );
