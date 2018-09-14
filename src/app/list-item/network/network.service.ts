@@ -1,6 +1,14 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { map } from "rxjs/operators";
+
+const url = "http://localhost:8080/todos";
+const httpOptions = {
+  headers: new HttpHeaders({
+    "Content-Type": "application/json"
+  })
+};
+
 @Injectable({
   providedIn: "root"
 })
@@ -10,7 +18,7 @@ export class NetworkService {
   constructor(private http: HttpClient) {}
 
   getToDoList() {
-    return this.http.get<any[]>("http://localhost:8080/todos").pipe(
+    return this.http.get<any[]>(url).pipe(
       map(data => {
         return data;
       })
@@ -18,22 +26,26 @@ export class NetworkService {
   }
 
   addItem(title) {
-    let db = Object.values(this.toDoList);
-    this.toDoList[db.length] = {
-      id: db.length,
-      title: title,
-      checked: false
-    };
+    return this.http.post<any>(
+      url,
+      {
+        id: "",
+        description: title,
+        checked: false
+      },
+      httpOptions
+    );
   }
 
-  toggleMark(key, flag) {
-    console.log(key, flag);
-    this.toDoList[key].checked = !flag;
+  toggleMark(key, flag, description) {
+    return this.http.put<any>(
+      url,
+      { id: key, checked: !flag, description },
+      httpOptions
+    );
   }
 
   removeItem(key) {
-    delete this.toDoList[key];
-
-    console.log(this.toDoList);
+    return this.http.delete<string>(url + "/" + key, httpOptions);
   }
 }

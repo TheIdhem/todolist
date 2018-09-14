@@ -9,12 +9,14 @@ import { NetworkService } from "./network/network.service";
 })
 export class ListItemComponent implements OnInit {
   toDoList: any[];
+  id: String;
 
   constructor(private networkServices: NetworkService) {}
 
   ngOnInit() {
     this.networkServices.getToDoList().subscribe(data => {
-      this.toDoList = data;
+      if (data.length != 0) this.toDoList = data;
+      else this.toDoList = [];
       this.toDoList.sort((a, b) => {
         return a.checked - b.checked;
       });
@@ -22,25 +24,52 @@ export class ListItemComponent implements OnInit {
   }
 
   addItem(title) {
-    // this.networkServices.addItem(title.value);
-    this.toDoList.push({
-      id: "khar",
-      description: title.value,
-      checked: false
-    });
-    title.value = null;
+    this.networkServices.addItem(title.value).subscribe(
+      val => {
+        this.toDoList.push({
+          id: val.id,
+          description: title.value,
+          checked: false
+        });
+        title.value = null;
+      },
+      response => {
+        console.log("POST call in error", response);
+      },
+      () => {
+        console.log("The POST observable is now completed.");
+      }
+    );
   }
 
-  toggleMark(key: string, checked) {
-    // this.networkServices.toggleMark(key, checked);
+  toggleMark(key: string, checked, description) {
+    this.networkServices.toggleMark(key, checked, description).subscribe(
+      val => {
+        for (let i = 0; i < this.toDoList.length; i++) {
+          if (this.toDoList[i].id === key) {
+            this.toDoList[i].checked = !checked;
+          }
+        }
+      },
+      response => {
+        console.log("PUT call in error", response);
+      },
+      () => {}
+    );
   }
 
   removeItem(key) {
+    this.networkServices.removeItem(key).subscribe(
+      val => {},
+      response => {
+        console.log("DELETE call in error", response);
+      },
+      () => {}
+    );
     for (let i = 0; i < this.toDoList.length; i++) {
       if (this.toDoList[i].id === key) {
         this.toDoList.splice(i, 1);
       }
     }
   }
-  // this.networkServices.removeItem(key);
 }
