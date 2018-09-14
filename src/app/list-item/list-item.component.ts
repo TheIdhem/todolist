@@ -17,9 +17,7 @@ export class ListItemComponent implements OnInit {
     this.networkServices.getToDoList().subscribe(data => {
       if (data.length != 0) this.toDoList = data;
       else this.toDoList = [];
-      this.toDoList.sort((a, b) => {
-        return a.checked - b.checked;
-      });
+      this.sortToDoList();
     });
   }
 
@@ -31,6 +29,7 @@ export class ListItemComponent implements OnInit {
           description: title.value,
           checked: false
         });
+        this.sortToDoList();
         title.value = null;
       },
       response => {
@@ -50,12 +49,19 @@ export class ListItemComponent implements OnInit {
             this.toDoList[i].checked = !checked;
           }
         }
+        this.sortToDoList();
       },
       response => {
         console.log("PUT call in error", response);
       },
       () => {}
     );
+  }
+
+  sortToDoList() {
+    this.toDoList.sort((a, b) => {
+      return a.checked - b.checked;
+    });
   }
 
   removeItem(key) {
